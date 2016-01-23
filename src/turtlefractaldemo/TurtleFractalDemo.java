@@ -20,6 +20,8 @@ import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.awt.Color;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
 
 /**
  *
@@ -33,30 +35,76 @@ public class TurtleFractalDemo
     // draws a Koch Snowflake of size s
     // afterwards, the Turtle is s pixels away from its starting postion,
     // facing the same direction
-    public static void kochSnowflake(TurtleSlave t, double s)
+    public static void kochSnowflake(Turtle t, double s)
     {
         kochSnowflakeComplete(t, s); 
     }
 
     // draws a Sierpinski Gasket of size s
     // afterwards, the Turtle is in the same position, facing the same direction
-    public static void sierpinskiGasket(TurtleSlave t, double s)
+    public static void sierpinskiGasket(Turtle t, double s)
     {
-        sierpinskiGasketComplete(t, s);
+        kgasket(t, s);
     }
 
+    public static void kgasket(Turtle t, double s) {
+        if (s > 10)
+        {
+            kgasket(t, s/2);
+            t.forward(s);
+            t.right(120);
+            
+            kgasket(t, s/2);
+            t.forward(s);
+            t.right(120);
+            
+            kgasket(t, s/2);
+            t.forward(s);
+            t.right(120);
+        }
+    }
+    
     // draws a Fractal Tree with two branches and a trunk
     // afterwards, the Turtle is in the same position, facing the same direction
-    public static void fractalTree(TurtleSlave t, double s)
+    // long one is s, side of first triangle is s/3, side of first branch off triangle is s/2. (for tree)
+    public static void fractalTree(Turtle t, double s)
     {
-        fractalTreeComplete(t, s);
+        if (s < 10) {
+            return;
+        }
+        
+        t.forward(s);
+        t.left(30);
+        t.forward(s/3);
+        t.left(30);
+        fractalTree(t, s/2);
+        
+        t.right(150);
+        t.forward(s/3);
+        t.left(30);
+        fractalTree(t, s/2);
+        
+        t.right(150);
+        t.forward(s/3);
+        t.left(30);
+        t.forward(s);
+        t.right(180);
     }
+    
 
     // draws a circle fractal
     // afterwards, the turtle is in the same position, facing the same direction
-    public static void circleFractal(TurtleSlave t, double s)
+    //R = 2r/sqrt.3 + r
+    public static void circleFractal(Turtle t, double s)
     {
-        circleFractalComplete( t, s );
+        if (s < 2) return;
+        double k = Math.sqrt(3)/(2 + Math.sqrt(3));
+        t.arcRight(120, s);
+        circleFractal(t, k * s);
+        t.arcRight(120, s);
+        circleFractal(t, k * s);
+        t.arcRight(120, s);
+        circleFractal(t, k * s);
     }
 
     public static void drawPentagon(Turtle shelldon, double l)
@@ -72,18 +120,18 @@ public class TurtleFractalDemo
      */
     public static void main(String[] args)
     {
-        TurtleSlave t = setUpTurtleSlave();
+//        TurtleSlave t = setUpTurtleSlave();
+        Turtle t = Turtle.CreateTurtle();
+
         if ( t != null )
         {
-            mv(t);
-            t.setColor(Color.BLACK);
-            
             circleFractal(t, 200);
-            
+//            mv(t);
+//            fractalTree(t, 200);
         }
     }
     
-    public static void kazKoch(TurtleSlave t, double l, double precision) {
+    public static void kazKoch(Turtle t, double l, double precision) {
         if (l > precision) {
 //            t.setColor(Color.BLUE);
             kazKoch(t, l/3, precision);
@@ -103,10 +151,10 @@ public class TurtleFractalDemo
     
     public static void mv( Turtle t) {
         t.setColor(Color.WHITE);
-        t.left(90);
-        t.forward(100);
         t.right(180);
-        
+        t.forward(200);
+        t.right(180);
+        t.setColor(Color.BLACK);
     }
 
     public static TurtleSlave setUpTurtleSlave()
@@ -128,27 +176,27 @@ public class TurtleFractalDemo
         return null;
     }
     
-    public static void kochSnowflakeComplete(TurtleSlave t, double s)
+    public static void kochSnowflakeComplete(Turtle t, double s)
     {
-        t.startCommandBlock();
+//        t.startCommandBlock();
         out.println("kochSnowflake " + s);
     }
 
-    public static void sierpinskiGasketComplete(TurtleSlave t, double s)
+    public static void sierpinskiGasketComplete(Turtle t, double s)
     {
-        t.startCommandBlock();
+//        t.startCommandBlock();
         out.println("sierpinskiGasket " + s);
     }
 
-    public static void fractalTreeComplete(TurtleSlave t, double s)
+    public static void fractalTreeComplete(Turtle t, double s)
     {
-        t.startCommandBlock();
+//        t.startCommandBlock();
         out.println("fractalTree " + s);
     }
 
-    public static void circleFractalComplete(TurtleSlave t, double s)
+    public static void circleFractalComplete(Turtle t, double s)
     {
-        t.startCommandBlock();
+//        t.startCommandBlock();
         out.println("circleFractal " + s);
     }
 
